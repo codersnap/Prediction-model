@@ -13,7 +13,7 @@ with st.expander('Data'):
     df
 
 st.write('**X**')
-x_raw=df.drop('need_service',axis=1)
+x_raw=df.drop('needs_service',axis=1)
 x_raw
 
 
