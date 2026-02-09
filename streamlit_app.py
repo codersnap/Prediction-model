@@ -36,7 +36,7 @@ with st.sidebar:
     driving_style=st.selectbox('Driving-Style',('Agressive','Smooth'))
 
 
-     data={
+    data={
         'km_since_last_service':km_since_last_service,
         'avg_speed_kmph':avg_speed_kmph,
         'engine_oil_km':engine_oil_km,
