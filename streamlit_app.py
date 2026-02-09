@@ -34,3 +34,16 @@ with st.sidebar:
     brake_pad_thickness_mm=st.slider('Break pad thickness(mm)',0.0,15.0,7.5)
     clutch_pad_thickness_mm=st.slider('Clutch pad thickness(mm)',0.0,10.0,5.0)
     driving_style=st.selectbox('Driving-Style',('Agressive','Smooth'))
+
+
+     data={
+        'km_since_last_service':km_since_last_service,
+        'avg_speed_kmph':avg_speed_kmph,
+        'engine_oil_km':engine_oil_km,
+        'brake_pad_thickness_mm':brake_pad_thickness_mm,
+        'clutch_pad_thickness_mm':clutch_pad_thickness_mm,
+        'driving_style':driving_style
+         }
+    input_df=pd.DataFrame(data,index=[0])
+    input_cars=pd.concat([input_df,x_raw],axis=0)
+input_df
