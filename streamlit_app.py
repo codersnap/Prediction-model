@@ -32,5 +32,5 @@ with st.sidebar:
     avg_speed_kmph=st.slider('Avg speed(km/hr)',0,120,60)
     engine_oil_km=st.slider('Engine Oil',0,20000,10000)
     brake_pad_thickness_mm=st.slider('Break pad thickness(mm)',0.0,15.0,7.5)
-    clutch_pad_thickness_mm=st.slider('Clutch pad thickness(mm)'0.0,10.0,5.0)
-    driving_style=st.selectbox('Driving-Style'('Agressive','Smooth'))
+    clutch_pad_thickness_mm=st.slider('Clutch pad thickness(mm)',0.0,10.0,5.0)
+    driving_style=st.selectbox('Driving-Style',('Agressive','Smooth'))
