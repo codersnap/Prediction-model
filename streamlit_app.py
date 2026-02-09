@@ -58,5 +58,5 @@ with st.expander('Input Features'):
     st.write('**Input feature**')
     input_df
     st.write('**Combined feature Data**')
-    input_penguins
+    input_cars
 
