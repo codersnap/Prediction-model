@@ -12,6 +12,8 @@ with st.expander('Data'):
     df=pd.read_csv('https://raw.githubusercontent.com/codersnap/Prediction-model/master/car_service_dataset_1000_rows.csv')
     df
 
-    
+st.write('**X**')
+x_raw=df.drop('need_service',axis=1)
+x_raw
 
 
