@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 
 
 st.title('🤖 Vehicle Maintainance Prediciton ')
@@ -59,4 +60,31 @@ with st.expander('Input Features'):
     input_df
     st.write('**Combined feature Data**')
     input_cars
+
+X = input_cars.iloc[1:]      # training features
+input_row = input_cars.iloc[:1]  # user input
+y = y_raw
+
+#model
+
+clf = RandomForestClassifier(random_state=42)
+clf.fit(X, y)
+prediction = clf.predict(input_row)
+prediction_proba = clf.predict_proba(input_row)
+
+#mapping the output
+service_map = {
+    0: 'No Service Required',
+    1: 'Service Required'
+}
+
+result = service_map[prediction[0]]
+
+st.subheader('Prediction Result')
+
+if prediction[0] == 1:
+    st.error(f'🚨 {result}')
+else:
+    st.success(f'✅ {result}')
+
 
