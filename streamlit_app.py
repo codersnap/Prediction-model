@@ -45,5 +45,18 @@ with st.sidebar:
         'driving_style':driving_style
          }
     input_df=pd.DataFrame(data,index=[0])
+    
+    # Encode categorical input
+    input_df['driving_style'] = input_df['driving_style'].map({
+    'Aggressive': 1,
+    'Smooth': 0
+    })
+
     input_cars=pd.concat([input_df,x_raw],axis=0)
-input_df
+    
+with st.expander('Input Features'):
+    st.write('**Input feature**')
+    input_df
+    st.write('**Combined feature Data**')
+    input_penguins
+
