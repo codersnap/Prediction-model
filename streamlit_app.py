@@ -22,4 +22,8 @@ with st.expander('Y_Raw'):
     y_raw=df.needs_service
     y_raw
 
+with st.expander('Data Visualisation'):
+    st.write('**Scatter Plot**')
+    st.scatter_chart(data=df,x='km_since_last_service',y='brake_pad_thickness_mm',color='need_service')
+
 
