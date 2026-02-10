@@ -119,12 +119,17 @@ if uploaded_file is not None:
         mapped_df[key] = user_df[selected_col]
 
     # Encode categorical column
+    
     mapped_df["driving_style"] = (
-        mapped_df["driving_style"]
-        .astype(str)
-        .str.lower()
-        .map({"aggressive": 1, "smooth": 0})
+    mapped_df["driving_style"]
+    .astype(str)
+    .str.strip()     # removes spaces
+    .str.lower()     # normalizes case
+    .replace({ "aggressive": 1,
+              "smooth": 0})
     )
+
+   
 
     if mapped_df["driving_style"].isnull().any():
         st.error("Driving style must contain only 'Aggressive' or 'Smooth'")
