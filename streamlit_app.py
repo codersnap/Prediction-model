@@ -2,16 +2,14 @@ import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
-# -------------------------------------------------
-# APP SETUP
-# -------------------------------------------------
+
 st.set_page_config(page_title="Vehicle Maintenance Prediction", layout="wide")
 st.title("🤖 Vehicle Maintenance Prediction")
 st.info("Model is trained on internal data. User data is used only for prediction.")
 
-# -------------------------------------------------
+
 # LOAD INTERNAL TRAINING DATA (FIXED)
-# -------------------------------------------------
+
 DATA_URL = "https://raw.githubusercontent.com/codersnap/Prediction-model/master/vehicle_maintenance_dataset_1000_rows.csv"
 
 @st.cache_data
@@ -23,9 +21,8 @@ df = load_data()
 with st.expander("📊 Training Dataset"):
     st.dataframe(df.head())
 
-# -------------------------------------------------
 # MODEL FEATURES (FIXED SCHEMA)
-# -------------------------------------------------
+
 FEATURES = [
     "km_since_last_service",
     "total_km",
@@ -35,9 +32,6 @@ FEATURES = [
 ]
 TARGET = "needs_service"
 
-# -------------------------------------------------
-# PREPARE & TRAIN MODEL
-# -------------------------------------------------
 X = df[FEATURES].copy()
 y = df[TARGET]
 
@@ -51,9 +45,8 @@ model.fit(X, y)
 
 st.success("✅ Model trained successfully")
 
-# -------------------------------------------------
 # VISUALIZATION
-# -------------------------------------------------
+
 with st.expander("📈 Data Visualization"):
     st.scatter_chart(
         data=df,
@@ -62,10 +55,10 @@ with st.expander("📈 Data Visualization"):
         color="needs_service"
     )
 
-# =================================================
-# 1️⃣ MANUAL INPUT PREDICTION (SLIDERS)
-# =================================================
-st.header("🧑 Manual Vehicle Check")
+
+#  MANUAL INPUT 
+
+st.header(" Manual Vehicle Check")
 
 with st.sidebar:
     km_since_last_service = st.slider("Kilometers since last service", 0, 30000, 5000)
@@ -90,10 +83,10 @@ if manual_pred == 1:
 else:
     st.success(f"✅ No Service Required (Confidence: {manual_conf:.2f})")
 
-# =================================================
-# 2️⃣ FILE UPLOAD OPTION (THIS IS WHAT YOU ASKED FOR)
-# =================================================
-st.header("📂 Predict Using Uploaded CSV File")
+
+#  FILE UPLOAD OPTION 
+
+st.header(" Predict Using Uploaded CSV File")
 
 uploaded_file = st.file_uploader(
     "Upload your vehicle data CSV (any column names allowed)",
@@ -137,7 +130,7 @@ if uploaded_file is not None:
         st.error("Driving style must contain only 'Aggressive' or 'Smooth'")
         st.stop()
 
-    if st.button("🔮 Predict from Uploaded File"):
+    if st.button(" Predict from Uploaded File"):
         preds = model.predict(mapped_df)
         probs = model.predict_proba(mapped_df).max(axis=1)
 
@@ -159,11 +152,3 @@ if uploaded_file is not None:
             "text/csv"
         )
 
-# -------------------------------------------------
-# FOOTER
-# -------------------------------------------------
-st.markdown("---")
-st.caption(
-    "Training data is fixed. Uploaded data is used only for prediction. "
-    "Column mapping ensures flexibility with different variable names."
-)
