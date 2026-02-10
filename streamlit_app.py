@@ -1,90 +1,118 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
 
-st.title('🤖 Vehicle Maintainance Prediciton ')
+st.title("🤖 Vehicle Maintenance Prediction")
+st.info("A machine learning model to predict whether vehicle servicing is required")
 
-st.info('A machine learning model for prediction')
+# -------------------------------------------------
+# LOAD DATA (CORRECT RAW GITHUB LINK)
+# -------------------------------------------------
+DATA_URL = "https://raw.githubusercontent.com/codersnap/Prediction-model/master/vehicle_maintenance_dataset_1000_rows.csv"
 
-with st.expander('Data'):
-    st.write('**Raw Data**')
-    df=pd.read_csv('https://github.com/codersnap/Prediction-model/blob/master/vehicle_maintenance_dataset_1000_rows.csv')
-    df
+@st.cache_data
+def load_data():
+    return pd.read_csv(DATA_URL)
 
-with st.expander('X_RAW'):
-    st.write('**X**')
-    x_raw=df.drop('needs_service',axis=1)
-    x_raw
+df = load_data()
 
-with st.expander('Y_Raw'):
-    st.write('**Y**')
-    y_raw=df.needs_service
-    y_raw
+# -------------------------------------------------
+# SHOW DATA
+# -------------------------------------------------
+with st.expander("📊 Raw Dataset"):
+    st.dataframe(df.head())
 
-with st.expander('Data Visualisation'):
-    st.write('**Scatter Plot**')
-    st.scatter_chart(data=df,x='km_since_last_service',y='brake_pad_thickness_mm',color='needs_service')
+# -------------------------------------------------
+# PREPARE TRAINING DATA
+# -------------------------------------------------
+FEATURES = [
+    "km_since_last_service",
+    "total_km",
+    "service_count",
+    "months_since_last_service",
+    "driving_style"
+]
 
+TARGET = "needs_service"
+
+X = df[FEATURES].copy()
+y = df[TARGET]
+
+# Encode categorical feature
+X["driving_style"] = X["driving_style"].map({
+    "Aggressive": 1,
+    "Smooth": 0
+})
+
+# -------------------------------------------------
+# TRAIN MODEL
+# -------------------------------------------------
+model = RandomForestClassifier(random_state=42)
+model.fit(X, y)
+
+st.success("✅ Model trained successfully")
+
+# -------------------------------------------------
+# DATA VISUALIZATION (SAFE COLUMNS ONLY)
+# -------------------------------------------------
+with st.expander("📈 Data Visualization"):
+    st.scatter_chart(
+        data=df,
+        x="km_since_last_service",
+        y="months_since_last_service",
+        color="needs_service"
+    )
+
+# -------------------------------------------------
+# USER INPUT (REALISTIC FEATURES)
+# -------------------------------------------------
 with st.sidebar:
-    st.header('Input features')
-    km_since_last_service=st.slider('km since last service',0,15000,7500)
-    avg_speed_kmph=st.slider('Avg speed(km/hr)',0,120,60)
-    engine_oil_km=st.slider('Engine Oil',0,20000,10000)
-    brake_pad_thickness_mm=st.slider('Break pad thickness(mm)',0.0,15.0,7.5)
-    clutch_pad_thickness_mm=st.slider('Clutch pad thickness(mm)',0.0,10.0,5.0)
-    driving_style=st.selectbox('Driving-Style',('Aggressive','Smooth'))
+    st.header("🧑 Vehicle Details")
 
+    km_since_last_service = st.slider(
+        "Kilometers since last service", 0, 30000, 5000
+    )
+    total_km = st.slider(
+        "Total kilometers driven", 0, 300000, 50000
+    )
+    service_count = st.slider(
+        "Number of services done", 0, 15, 3
+    )
+    months_since_last_service = st.slider(
+        "Months since last service", 0, 36, 6
+    )
+    driving_style = st.selectbox(
+        "Driving style", ["Smooth", "Aggressive"]
+    )
 
-    data={
-        'km_since_last_service':km_since_last_service,
-        'avg_speed_kmph':avg_speed_kmph,
-        'engine_oil_km':engine_oil_km,
-        'brake_pad_thickness_mm':brake_pad_thickness_mm,
-        'clutch_pad_thickness_mm':clutch_pad_thickness_mm,
-        'driving_style':driving_style
-         }
-    input_df=pd.DataFrame(data,index=[0])
-    
-    # Encode categorical input
-    input_df['driving_style'] = input_df['driving_style'].map({
-    'Aggressive': 1,
-    'Smooth': 0
-    })
+# -------------------------------------------------
+# CREATE INPUT DATAFRAME
+# -------------------------------------------------
+input_df = pd.DataFrame({
+    "km_since_last_service": [km_since_last_service],
+    "total_km": [total_km],
+    "service_count": [service_count],
+    "months_since_last_service": [months_since_last_service],
+    "driving_style": [1 if driving_style == "Aggressive" else 0]
+})
 
-    input_cars=pd.concat([input_df,x_raw],axis=0)
-    
-with st.expander('Input Features'):
-    st.write('**Input feature**')
-    input_df
-    st.write('**Combined feature Data**')
-    input_cars
+with st.expander("🔎 Input Features Used for Prediction"):
+    st.dataframe(input_df)
 
-X = input_cars.iloc[1:]      # training features
-input_row = input_cars.iloc[:1]  # user input
-y = y_raw
+# PREDICTION
 
-#model
+prediction = model.predict(input_df)[0]
+confidence = model.predict_proba(input_df).max()
 
-clf = RandomForestClassifier(random_state=42)
-clf.fit(X, y)
-prediction = clf.predict(input_row)
-prediction_proba = clf.predict_proba(input_row)
+st.subheader("🔮 Prediction Result")
 
-#mapping the output
-service_map = {
-    0: 'No Service Required',
-    1: 'Service Required'
-}
-
-result = service_map[prediction[0]]
-
-st.subheader('Prediction Result')
-
-if prediction[0] == 1:
-    st.error(f'🚨 {result}')
+if prediction == 1:
+    st.error(f"🚨 Service Required (Confidence: {confidence:.2f})")
 else:
-    st.success(f'✅ {result}')
+    st.success(f"✅ No Service Required (Confidence: {confidence:.2f})")
+
+
+
 
 
