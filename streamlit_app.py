@@ -10,7 +10,7 @@ st.info('A machine learning model for prediction')
 
 with st.expander('Data'):
     st.write('**Raw Data**')
-    df=pd.read_csv('https://raw.githubusercontent.com/codersnap/Prediction-model/master/car_service_dataset_1000_rows.csv')
+    df=pd.read_csv('https://github.com/codersnap/Prediction-model/blob/master/vehicle_maintenance_dataset_1000_rows.csv')
     df
 
 with st.expander('X_RAW'):
