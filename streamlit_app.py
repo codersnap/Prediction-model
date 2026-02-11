@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
 
-st.set_page_config(page_title="Vehicle Maintenance Prediction", layout="wide")
+
 st.title("🤖 Vehicle Maintenance Prediction")
 st.info("Model is trained on internal data. User data is used only for prediction.")
 
